@@ -18,15 +18,17 @@
         min-height: 100vh;
         padding: 50px;
         background-color: #18191C;
-
-        font-size: 18px;
+        margin-left: auto;
+        margin-right: auto;
+        font-size: 30px;
         font-family: "Roboto", sans-serif;
+        color: #FFFFFF;
     }
     .container {
         max-width: 600px;
         margin: 20px auto;
         padding: 20px;
-        background-color: #18191C;
+        background-color: #1b1818;
 
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -67,21 +69,19 @@
     </style>
   </head>
   <body>
-
-<?php
-if (!empty($messages)) {
-  print('<div id="messages">');
-  // Выводим все сообщения.
-  foreach ($messages as $message) {
-    print($message);
+<div class="body">
+  <?php
+  if (!empty($messages)) {
+      print('<div id="messages">');
+      // Выводим все сообщения.
+      foreach ($messages as $message) {
+          print($message);
+      }
+      print('</div>');
   }
-  print('</div>');
-}
+  ?>
+</div>
 
-// Далее выводим форму отмечая элементы с ошибками классом error
-// и задавая начальные значения элементов ранее сохраненными.
-?>
--
 
 
         <div class="container">

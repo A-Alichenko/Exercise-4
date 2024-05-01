@@ -1,37 +1,22 @@
 <?php
-/**
- * Реализовать проверку заполнения обязательных полей формы в предыдущей
- * с использованием Cookies, а также заполнение формы по умолчанию ранее
- * введенными значениями.
- */
+
 ini_set('display_errors', 0);
 ini_set('display_startup_errors', 0);
 error_reporting(0);
 header('Content-Type: text/html; charset=UTF-8');
 
 
-// Отправляем браузеру правильную кодировку,
-// файл index.php должен быть в кодировке UTF-8 без BOM.
-
-
-// В суперглобальном массиве $_SERVER PHP сохраняет некторые заголовки запроса HTTP
-// и другие сведения о клиненте и сервере, например метод текущего запроса $_SERVER['REQUEST_METHOD'].
 if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-  // Массив для временного хранения сообщений пользователю.
 
     $messages = array();
     $messages_fio = array();
     $messages_date = array();
     $messages_phone = array();
-    $messages_agree = array();
     $messages_email = array();
-    $messages_lang = array();
     $messages_biography = array();
-    $messages_gender = array();
 
 
-  // В суперглобальном массиве $_COOKIE PHP хранит все имена и значения куки текущего запроса.
-  // Выдаем сообщение об успешном сохранении.
+
   if (!empty($_COOKIE['save1']) || !empty($_COOKIE['save2']) || !empty($_COOKIE['save3']) || !empty($_COOKIE['save4'])  || !empty($_COOKIE['save7'])) {
     // Удаляем куку, указывая время устаревания в прошлом.
     setcookie('save1', '', 100000);
@@ -42,12 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
       setcookie('save7', '', 100000);
 
 
-
-    // Если есть параметр save, то выводим сообщение пользователю.
     $messages[] = 'Спасибо, результаты сохранены.';
   }
 
-  // Складываем признак ошибок в массив.
   $errors = array();
 
     $errors['name'] = !empty($_COOKIE['name_error']);
@@ -57,54 +39,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
     $errors['biography'] = !empty($_COOKIE['biography_error']);
 
 
-  // TODO: аналогично все поля.
-
-  // Выдаем сообщения об ошибках.
   if ($errors['name']) {
-    // Удаляем куки, указывая время устаревания в прошлом.
+
     setcookie('name_error', '', 100000);
     setcookie('name_value', '', 100000);
-    // Выводим сообщение.
+
     $messages_fio[] = '<div class="error">Укажите ваше ФИО.</div>';
   }
    if ($errors['phone']) {
-        // Удаляем куки, указывая время устаревания в прошлом.
+
         setcookie('phone_error', '', 100000);
         setcookie('phone_value', '', 100000);
-        // Выводим сообщение.
+
         $messages_phone[] = '<div class="error">Укажите корректный номер телефона.</div>';
 
 
    }
     if ($errors['email']) {
-        // Удаляем куки, указывая время устаревания в прошлом.
+
         setcookie('email_error', '', 100000);
         setcookie('email_value', '', 100000);
         // Выводим сообщение.
         $messages_email[] = '<div class="error">Введите корректный Email.</div>';
     }
     if ($errors['date']) {
-        // Удаляем куки, указывая время устаревания в прошлом.
+
         setcookie('date_error', '', 100000);
         setcookie('date_value', '', 100000);
-        // Выводим сообщение.
+
         $messages_date[] = '<div class="error">Укажите дату рождения.</div>';
     }
 
 
 
     if ($errors['biography']) {
-        // Удаляем куки, указывая время устаревания в прошлом.
+
         setcookie('biography_error', '', 100000);
         setcookie('biography_value', '', 100000);
-        // Выводим сообщение.
+
         $messages_biography[] = '<div class="error">Заполните поле биография.</div>';
     }
 
 
-  // TODO: тут выдать сообщения об ошибках в других полях.
-
-  // Складываем предыдущие значения полей в массив, если есть.
   $values = array();
   $values['name'] = empty($_COOKIE['name_value']) ? '' : $_COOKIE['name_value'];
   $values['phone'] = empty($_COOKIE['phone_value']) ? '' : $_COOKIE['phone_value'];
@@ -113,27 +89,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
     $values['biography'] = empty($_COOKIE['biography_value']) ? '' : $_COOKIE['biography_value'];
 
-  // TODO: аналогично все поля.
 
-  // Включаем содержимое файла form.php.
-  // В нем будут доступны переменные $messages, $errors и $values для вывода 
-  // сообщений, полей с ранее заполненными данными и признаками ошибок.
   include('form.php');
 }
-// Иначе, если запрос был методом POST, т.е. нужно проверить данные и сохранить их в XML-файл.
 else {
-    // Проверяем ошибки.
     $errors = FALSE;
 
     if (empty($_POST['name'])) {
-        // Выдаем куку на день с флажком об ошибке в поле fio.
+
         setcookie('name_error', '1', time() + 24 * 60 * 60);
         $errors = TRUE;
     }
 
     $errors = FALSE;
         if (empty($_POST['phone']) || !preg_match('~^(?:\+7|8)\d{10}$~', $_POST['phone']) ) {
-        // Выдаем куку на день с флажком об ошибке в поле fio.
+
         setcookie('phone_error', '2', time() + 24 * 60 * 60);
         $errors = TRUE;
         }
@@ -141,13 +111,13 @@ else {
 
 
         if (empty($_POST['email']) || preg_match("/^(?:[a-z0-9]+(?:[-_.]?[a-z0-9]+)?@[a-z0-9_.-]+(?:\.?[a-z0-9]+)?\.[a-z]{2,5})$/i", $_POST['phone'])) {
-        // Выдаем куку на день с флажком об ошибке в поле fio.
+
         setcookie('email_error', '3', time() + 24 * 60 * 60);
             $errors = TRUE;
         }
 
    if (empty($_POST['date'])) {
-       // Выдаем куку на день с флажком об ошибке в поле fio.
+
        setcookie('date_error', '4', time() + 24 * 60 * 60);
        $errors = TRUE;
    }
@@ -155,31 +125,27 @@ else {
 
 
     if (empty($_POST['biography'])|| preg_match('/^[a-zA-Zа-яА-Яе0-9,.!? ]+$/',$_POST['biography'])) {
-        // Выдаем куку на день с флажком об ошибке в поле fio.
+
         setcookie('biography_error', '7', time() + 24 * 60 * 60);
         $errors = TRUE;
     }
 
 
 
-    // Сохраняем ранее введенное в форму значение на месяц.
+
     setcookie('name_value', $_POST['name'], time() + 30 * 24 * 60 * 60);
     setcookie('phone_value', $_POST['phone'], time() + 30 * 24 * 60 * 60);
     setcookie('email_value', $_POST['email'], time() + 30 * 24 * 60 * 60);
     setcookie('date_value', $_POST['date'], time() + 30 * 24 * 60 * 60);
     setcookie('biography_value', $_POST['biography'], time() + 30 * 24 * 60 * 60);
 
-// *************
-// TODO: тут необходимо проверить правильность заполнения всех остальных полей.
-// Сохранить в Cookie признаки ошибок и значения полей.
-// *************
 
     if ($errors) {
-        // При наличии ошибок перезагружаем страницу и завершаем работу скрипта.
+
         header('Location: index.php');
         exit();
     } else {
-        // Удаляем Cookies с признаками ошибок.
+
         setcookie('name_error', '', 100000);
         setcookie('phone_error', '', 100000);
         setcookie('email_error', '', 100000);
@@ -188,7 +154,7 @@ else {
         setcookie('Languages[]_error', '', 100000);
         setcookie('biography_error', '', 100000);
         setcookie('agree_error', '', 100000);
-        // TODO: тут необходимо удалить остальные Cookies.
+
     }
     if ($errors) {
         exit();
@@ -199,8 +165,7 @@ else {
     $date  = $_POST['date'];
     $gender = $_POST['gender'];
     $biography = $_POST['biography'];
-    // Сохранение в БД.
-    // ...
+
     $user = 'u67364';
     $pass = '9539974';
     $db = new PDO('mysql:host=localhost;dbname=u67364', $user, $pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8"));
@@ -247,14 +212,14 @@ else {
         print('Error : ' . $e->getMessage());
         exit();
     }
-    // Сохраняем куку с признаком успешного сохранения.
+
     setcookie('save1', '1');
     setcookie('save2', '2');
     setcookie('save3', '3');
     setcookie('save4', '4');
     setcookie('save6', '7');
 
-    // Делаем перенаправление.
+
     header('Location: index.php');
 
 }
